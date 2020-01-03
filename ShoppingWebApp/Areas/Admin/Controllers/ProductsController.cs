@@ -27,9 +27,17 @@ namespace ShoppingWebApp.Areas.Admin.Controllers
 
 
         // GET /admin/products/index
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int p=1)
         {
-            return View(await context.Products.OrderByDescending(x => x.Id).Include(x => x.Category).ToListAsync());
+            //add pagination
+            int pageSize = 6;
+            var products = context.Products.OrderByDescending(x => x.Id).Include(x => x.Category).Skip((p-1) * pageSize).Take(pageSize);
+
+            ViewBag.PageNumber = p;
+            ViewBag.PageRange = pageSize;
+            ViewBag.TotalPages = (int)Math.Ceiling((decimal)context.Products.Count() / pageSize);
+
+            return View(await products.ToListAsync());
         }
 
         // GET /admin/products/create
