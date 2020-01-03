@@ -195,6 +195,39 @@ namespace ShoppingWebApp.Areas.Admin.Controllers
             return View(product);
         }
 
+        // GET /admin/products/delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            Product product = await context.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                TempData["Error"] = "The product does not exist!";
+
+            }
+            else
+            {
+                //set the directory using webHostEnvironment
+                string uploadsDir = Path.Combine(webHostEnvironment.WebRootPath, "media/products");
+                //remove the old image if exists one
+                if (!string.Equals(product.Image, "noimage.png"))
+                {
+                    string oldImagePath = Path.Combine(uploadsDir, product.Image);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                context.Products.Remove(product);
+                await context.SaveChangesAsync();
+                TempData["Success"] = "The product has been deleted!";
+
+            }
+            //retur page detail 
+            return RedirectToAction("Index");
+        }
+
 
 
 
