@@ -102,5 +102,21 @@ namespace ShoppingWebApp.Areas.Admin.Controllers
             return View(product);
         }
 
+
+        // GET /admin/products/details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            //get the product from db
+            Product product = await context.Products.Include(x=>x.Category).FirstOrDefaultAsync(x=>x.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+            //retur page detail 
+            return View(product);
+        }
+
+
     }
 }
