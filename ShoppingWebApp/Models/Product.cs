@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using ShoppingWebApp.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,6 +28,8 @@ namespace ShoppingWebApp.Models
         //validation of category
         [Range(1,int.MaxValue,ErrorMessage ="You must choose a category.")]
         public int CategoryId { get; set; }
+
+
         public string Image { get; set; }
 
         [ForeignKey("CategoryId")]
@@ -34,6 +37,8 @@ namespace ShoppingWebApp.Models
 
         //not put the property in database table
         [NotMapped]
+        //add custom validation class
+        [FileExtension]
         public IFormFile ImageUpload { get; set; }
     }
 }
