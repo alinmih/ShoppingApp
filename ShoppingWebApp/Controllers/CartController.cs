@@ -118,5 +118,15 @@ namespace ShoppingWebApp.Controllers
             return RedirectToAction("Index");
         }
 
+        //get /cart/clear
+        public IActionResult Clear()
+        {
+
+            HttpContext.Session.Remove("Cart");
+
+            //redirect
+            return RedirectToAction("Index");
+        }
+
     }
 }
