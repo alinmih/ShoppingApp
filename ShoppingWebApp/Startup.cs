@@ -54,8 +54,8 @@ namespace ShoppingWebApp
 
             app.UseEndpoints(endpoints =>
             {
-                //define routing from moast specific to least specific
-                //map the new route to Pages controller and Page action
+                // define routing from moast specific to least specific
+                // map the new route to Pages controller and Page action
                 // will work without /pages/action
                 endpoints.MapControllerRoute(
                     name:"pages",
