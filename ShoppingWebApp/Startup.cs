@@ -25,6 +25,14 @@ namespace ShoppingWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //enable sessions
+            services.AddMemoryCache();
+            services.AddSession(options=> 
+            {
+                ////clear the session in specified time
+                //options.IdleTimeout = TimeSpan.FromSeconds(2);
+            });
+
             services.AddControllersWithViews();
 
             //register db context
@@ -50,6 +58,9 @@ namespace ShoppingWebApp
 
             app.UseRouting();
 
+            //use session
+            app.UseSession();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -61,6 +72,12 @@ namespace ShoppingWebApp
                     name:"pages",
                     pattern:"{slug?}",
                     defaults: new { controller="Pages", action="Page"}
+                    );
+
+                endpoints.MapControllerRoute(
+                    name: "products",
+                    pattern: "products/{categorySlug}",
+                    defaults: new { controller = "Products", action = "ProductsByCategory" }
                     );
 
                 //map the areas folder
