@@ -55,8 +55,15 @@ namespace ShoppingWebApp.Controllers
             //set session
             HttpContext.Session.SetJson("Cart", cart);
 
-            //redirect
-            return RedirectToAction("Index");
+
+            if (HttpContext.Request.Headers["X-Requested-With"]!="XMLHttpRequest")
+            {
+                //redirect
+                return RedirectToAction("Index");
+            }
+
+            return ViewComponent("SmallCart");
+            
 
         }
 
@@ -125,7 +132,9 @@ namespace ShoppingWebApp.Controllers
             HttpContext.Session.Remove("Cart");
 
             //redirect
-            return RedirectToAction("Index");
+            //return RedirectToAction("Page","Pages");
+            //return Redirect("/");
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
     }
