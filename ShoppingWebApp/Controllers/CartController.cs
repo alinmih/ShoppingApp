@@ -60,5 +60,63 @@ namespace ShoppingWebApp.Controllers
 
         }
 
+        //get /cart/decrease/5
+        public IActionResult Decrease(int id)
+        {
+
+            //get the list from session
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
+
+            //get the cartitem which is equal to product
+            CartItem cartItem = cart.Where(x => x.ProductId == id).FirstOrDefault();
+
+            //add new item in art, if exists increase the qty by one
+            if (cartItem.Quantity>1)
+            {
+                --cartItem.Quantity;
+            }
+            else
+            {
+                cart.RemoveAll(x => x.ProductId == id);
+            }
+
+
+            if (cart.Count==0)
+            {
+                HttpContext.Session.Remove("Cart");
+            }
+            else
+            {
+                //set session
+                HttpContext.Session.SetJson("Cart", cart);
+            }
+
+            //redirect
+            return RedirectToAction("Index");
+        }
+
+        //get /cart/remove/5
+        public IActionResult Remove(int id)
+        {
+
+            //get the list from session
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
+         
+            cart.RemoveAll(x => x.ProductId == id);
+ 
+            if (cart.Count == 0)
+            {
+                HttpContext.Session.Remove("Cart");
+            }
+            else
+            {
+                //set session
+                HttpContext.Session.SetJson("Cart", cart);
+            }
+
+            //redirect
+            return RedirectToAction("Index");
+        }
+
     }
 }

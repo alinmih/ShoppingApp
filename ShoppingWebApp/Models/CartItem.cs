@@ -8,7 +8,7 @@ namespace ShoppingWebApp.Models
     public class CartItem
     {
         public int ProductId { get; set; }
-        public string productName { get; set; }
+        public string ProductName { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public decimal Total { get { return Quantity * Price; }}
@@ -21,7 +21,7 @@ namespace ShoppingWebApp.Models
         public CartItem(Product product)
         {
             ProductId = product.Id;
-            productName = product.Name;
+            ProductName = product.Name;
             Price = product.Price;
             Quantity = 1;
             Image = product.Image;
