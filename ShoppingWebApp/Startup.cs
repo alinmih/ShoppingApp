@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ShoppingWebApp.Infrastructure;
+using ShoppingWebApp.Models;
 
 namespace ShoppingWebApp
 {
@@ -38,6 +40,17 @@ namespace ShoppingWebApp
             //register db context
             services.AddDbContext<ShoppingWebAppContext>(options=> options.UseSqlServer
                 (Configuration.GetConnectionString("ShoppingWebAppContext")));
+
+            //add identity service
+            services.AddIdentity<AppUser, IdentityRole>(options=> {
+                options.Password.RequiredLength = 4;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                })
+                .AddEntityFrameworkStores<ShoppingWebAppContext>()
+                .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +75,9 @@ namespace ShoppingWebApp
             app.UseSession();
 
             app.UseAuthorization();
+
+            //added to use user authentication
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

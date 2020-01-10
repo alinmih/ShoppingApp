@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingWebApp.Infrastructure
 {
+    //updated to IdentityDbContext<AppUser> to use identity
     public class ShoppingWebAppContext : IdentityDbContext<AppUser>
     {
         public ShoppingWebAppContext(DbContextOptions<ShoppingWebAppContext> options) :base(options)

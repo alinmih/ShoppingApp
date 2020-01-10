@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingWebApp.Models
 {
+    //class creation for creating tables with user
     public class AppUser :IdentityUser
     {
         public string Occupation { get; set; }
