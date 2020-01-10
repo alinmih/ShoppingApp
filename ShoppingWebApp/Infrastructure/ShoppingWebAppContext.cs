@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShoppingWebApp.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingWebApp.Infrastructure
 {
-    public class ShoppingWebAppContext : DbContext
+    public class ShoppingWebAppContext : IdentityDbContext<AppUser>
     {
         public ShoppingWebAppContext(DbContextOptions<ShoppingWebAppContext> options) :base(options)
         {
