@@ -131,10 +131,16 @@ namespace ShoppingWebApp.Controllers
 
             HttpContext.Session.Remove("Cart");
 
+            if (HttpContext.Request.Headers["X-Requested-With"] != "XMLHttpRequest")
+            {
+                //redirect
+                return Redirect(Request.Headers["Referer"].ToString());
+            }
+
             //redirect
             //return RedirectToAction("Page","Pages");
             //return Redirect("/");
-            return Redirect(Request.Headers["Referer"].ToString());
+            return Ok();
         }
 
     }
