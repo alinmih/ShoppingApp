@@ -43,6 +43,7 @@ namespace ShoppingWebApp
 
             //add identity service
             services.AddIdentity<AppUser, IdentityRole>(options=> {
+                //set the options for password
                 options.Password.RequiredLength = 4;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireLowercase = false;
@@ -74,10 +75,11 @@ namespace ShoppingWebApp
             //use session
             app.UseSession();
 
-            app.UseAuthorization();
-
             //added to use user authentication
             app.UseAuthentication();
+            app.UseAuthorization();
+
+
 
             app.UseEndpoints(endpoints =>
             {

@@ -13,9 +13,11 @@ namespace ShoppingWebApp.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> userManager;
-        public AccountController(UserManager<AppUser> userManager)
+        private readonly SignInManager<AppUser> signInManager;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         // GET /account/register
@@ -26,7 +28,7 @@ namespace ShoppingWebApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(User user) 
+        public async Task<IActionResult> Register(User user)
         {
             if (ModelState.IsValid)
             {
@@ -55,5 +57,52 @@ namespace ShoppingWebApp.Controllers
             return View(user);
         }
 
+
+        // GET /account/login
+        [AllowAnonymous]
+        public IActionResult Login(string returnUrl)
+        {
+
+            Login login = new Login
+            {
+                ReturnUrl = returnUrl
+            };
+
+            return View(login);
+        }
+
+
+        // POST /account/login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(Login login)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser appUser = await userManager.FindByEmailAsync(login.Email);
+                if (appUser!=null)
+                {
+                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager
+                                                      .PasswordSignInAsync(appUser, login.Password, false, false);
+                    if (result.Succeeded)
+                    {
+                        return Redirect(login.ReturnUrl ?? "/");
+                    }
+                    ModelState.AddModelError("", "Login failed, wrong credentials.");
+                }
+            }
+
+            return View(login);
+        }
+
+
+        // GET /account/logout
+        public async Task<IActionResult> logout(string returnUrl)
+        {
+            await signInManager.SignOutAsync();
+            return Redirect("/");
+        }
     }
+
 }
