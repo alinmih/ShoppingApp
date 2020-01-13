@@ -14,10 +14,13 @@ namespace ShoppingWebApp.Controllers
     {
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        private IPasswordHasher<AppUser> passwordHasher;
+
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IPasswordHasher<AppUser> passwordHasher)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.passwordHasher = passwordHasher;
         }
 
         // GET /account/register
@@ -98,10 +101,46 @@ namespace ShoppingWebApp.Controllers
 
 
         // GET /account/logout
-        public async Task<IActionResult> logout(string returnUrl)
+        public async Task<IActionResult> Logout(string returnUrl)
         {
             await signInManager.SignOutAsync();
             return Redirect("/");
+        }
+
+        // GET /account/edit
+        public async Task<IActionResult> Edit(string returnUrl)
+        {
+            AppUser appUser = await userManager.FindByNameAsync(User.Identity.Name);
+            UserEdit user = new UserEdit(appUser);
+
+            return View(user);
+        }
+
+
+        // POST /account/edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> Edit(UserEdit user)
+        {
+            AppUser appUser = await userManager.FindByNameAsync(User.Identity.Name);
+
+            if (ModelState.IsValid)
+            {
+                appUser.Email = user.Email;
+                if (user.Password !=null)
+                {
+                    appUser.PasswordHash = passwordHasher.HashPassword(appUser, user.Password);
+                }
+
+                IdentityResult result = await userManager.UpdateAsync(appUser);
+                if (result.Succeeded)
+                {
+                    TempData["Success"] = "Your information has been edited!";
+                }
+            }
+
+            return View();
         }
     }
 
