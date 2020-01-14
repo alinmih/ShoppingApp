@@ -35,6 +35,9 @@ namespace ShoppingWebApp
                 //options.IdleTimeout = TimeSpan.FromSeconds(2);
             });
 
+            //lower case urls
+            services.AddRouting(options => options.LowercaseUrls=true);
+
             services.AddControllersWithViews();
 
             //register db context
